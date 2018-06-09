@@ -1,0 +1,21 @@
+{
+  "name": "interesting_bot",
+  "version": "1.0.0",
+  "description": "Bot that says interesting stuff",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "l_index": "./node_modules/.bin/eslint index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harish-veeramani/interesting-slack-bot.git"
+  },
+  "author": "Harish Veeramani",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/harish-veeramani/interesting-slack-bot/issues"
+  },
+  "homepage": "https://github.com/harish-veeramani/interesting-slack-bot#readme"
+}
