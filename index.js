@@ -31,6 +31,10 @@ bot.on('message', (data) => {
 
 // Respond to input
 function handleMessage (message) {
+    if (message.includes(" random")) {
+        random();
+        return;
+    }
     if (message.includes(" trivia")) {
         triviaMessage();
     }
@@ -40,8 +44,20 @@ function handleMessage (message) {
 }
 
 // Outputs
-function triviaMessage () {
+function random () {
+    const rand = Math.floor(Math.random() * 2) + 1;
+    switch (rand) {
+        case 1:
+          chuckJoke();
+          break;
+        case 2:
+          triviaMessage();
+          break;
+      }
+}
 
+function triviaMessage () {
+    bot.postMessageToChannel("bots-only", "Trivia", null);
 }
 
 function chuckJoke () {
