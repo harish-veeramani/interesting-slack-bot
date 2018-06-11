@@ -26,17 +26,19 @@ bot.on('message', (data) => {
         return;
     }
 
-    handleMessage(data.text);
+    handleMessage(data);
 });
 
 // Respond to input
-function handleMessage (message) {
+function handleMessage (data) {
+    const message = data.text;
+    
     if (message.includes(" random")) {
         random();
         return;
     }
     if (message.includes(" trivia")) {
-        triviaMessage();
+        triviaMessage(data.user);
     }
     if (message.includes(" chucknorris")) {
         chuckJoke();
@@ -51,13 +53,35 @@ function random () {
           chuckJoke();
           break;
         case 2:
-          triviaMessage();
+          triviaMessage(data.user);
           break;
       }
 }
 
-function triviaMessage () {
-    bot.postMessageToChannel("bots-only", "Trivia", null);
+function triviaMessage (user) {
+    axios.get("https://opentdb.com/api.php?amount=1").
+        then(res => {
+            const question = res.data.results[0]["question"];
+            bot.postMessageToChannel("bots-only", `Question: ${question}`, null);
+
+            const answer = res.data.results[0]["correct_answer"];
+            console.log(answer);
+            bot.on('message', (data) => {
+                if (data.type !== 'message') {
+                    return;
+                }
+            
+                const userAnswer = data.text;
+                if (data.user === user) {
+                    if (userAnswer.toLowerCase().includes(answer.toLowerCase())) {
+                        bot.postMessageToChannel("bots-only", "Correct!", null);
+                    } else {
+                        console.log("wrong");
+                        bot.postMessageToChannel("bots-only", `Wrong! Correct answer is ${answer}`, null);
+                    }
+                }
+            });
+        });
 }
 
 function chuckJoke () {
@@ -70,5 +94,5 @@ function chuckJoke () {
             }
         
             bot.postMessageToChannel("bots-only", `Chuck Norris: ${joke}`, params); 
-        })
+        });
 }
