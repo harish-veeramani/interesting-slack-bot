@@ -1,6 +1,8 @@
 const SlackBot = require('slackbots');
 const axios = require('axios');
 
+var answered = false;
+
 var bot = new SlackBot({
     token: 'xoxb-379846748119-378574745476-uY8TXhY7i7D90or7Rum1XcAL', // Add a bot https://my.slack.com/services/new/bot and put the token 
     name: 'Interesting Bot'
@@ -32,15 +34,28 @@ bot.on('message', (data) => {
 // Respond to input
 function handleMessage (data) {
     const message = data.text;
-    
-    if (message.includes(" random")) {
+    if (message.includes(" help")) {
+        bot.postMessageToChannel("bots-only", "Usage:  trivia <category>, or trivia random", null);
+    } else if (message.includes(" random" || " trivia random")) {
+        answered = false;
         random();
-        return;
-    }
-    if (message.includes(" trivia")) {
-        triviaMessage(data.user);
-    }
-    if (message.includes(" chucknorris")) {
+    } else if (message.includes(" trivia film")) {
+        answered = false;
+        triviaMessage(data.user, "film");
+    } else if (message.includes(" trivia computers")) {
+        answered = false;
+        triviaMessage(data.user, "computers");
+    } else if (message.includes(" trivia math")) {
+        answered = false;
+        triviaMessage(data.user, "math");
+    } else if (message.includes(" trivia geography")) {
+        answered = false;
+        triviaMessage(data.user, "computers");
+    } else if (message.includes(" trivia sports")) {
+        answered = false;
+        triviaMessage(data.user, "computers");
+    } else if (message.includes(" chucknorris")) {
+        answered = false;
         chuckJoke();
     }
 }
@@ -50,13 +65,13 @@ function random () {
     const rand = Math.floor(Math.random() * 2) + 1;
     switch (rand) {
         case 1:
-          chuckJoke();
-          break;
+            chuckJoke();
+            break;
         case 2:
-          triviaMessage(data.user);
-          break;
-      }
-}
+            triviaMessage(data.user);
+            break;
+    }
+}  
 
 function triviaMessage (user) {
     axios.get("https://opentdb.com/api.php?amount=1").
@@ -72,13 +87,14 @@ function triviaMessage (user) {
                 }
             
                 const userAnswer = data.text;
-                if (data.user === user) {
+                if (!answered && data.user === user) {
                     if (userAnswer.toLowerCase().includes(answer.toLowerCase())) {
                         bot.postMessageToChannel("bots-only", "Correct!", null);
                     } else {
                         console.log("wrong");
                         bot.postMessageToChannel("bots-only", `Wrong! Correct answer is ${answer}`, null);
                     }
+                    answered = true;
                 }
             });
         });
