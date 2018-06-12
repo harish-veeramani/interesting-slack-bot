@@ -35,10 +35,10 @@ bot.on('message', (data) => {
 function handleMessage (data) {
     const message = data.text;
     if (message.includes(" help")) {
-        bot.postMessageToChannel("bots-only", `Usage:  trivia <category>, or 'trivia random'`, null);
+        bot.postMessageToChannel("bots-only", `Usage:  trivia <category>, or trivia 'random'`, null);
     } else if (message.includes(" random" || " trivia random")) {
         answered = false;
-        random();
+        random(data.user);
     } else if (message.includes(" trivia film")) {
         answered = false;
         triviaMessage(data.user, "film");
@@ -61,15 +61,27 @@ function handleMessage (data) {
 }
 
 // Outputs
-function random () {
-    const rand = Math.floor(Math.random() * 2) + 1;
+function random (user) {
+    const rand = Math.floor(Math.random() * 5) + 1;
+
     switch (rand) {
-        case 1:
-            chuckJoke();
-            break;
-        case 2:
-            triviaMessage(data.user);
-            break;
+    case 1:
+        triviaMessage(user, "film");
+        break;
+    case 2:
+        triviaMessage(user, "computers");
+        break;
+    case 3:
+        triviaMessage(user, "math");
+        break;
+    case 4:
+        triviaMessage(user, "geography");
+        break;
+    case 5:
+        triviaMessage(user, "sports");
+        break;
+    default:
+        triviaMessage(user, "random")
     }
 }  
 
