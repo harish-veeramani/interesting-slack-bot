@@ -35,7 +35,7 @@ bot.on('message', (data) => {
 function handleMessage (data) {
     const message = data.text;
     if (message.includes(" help")) {
-        bot.postMessageToChannel("bots-only", "Usage:  trivia <category>, or trivia random", null);
+        bot.postMessageToChannel("bots-only", `Usage:  trivia <category>, or 'trivia random'`, null);
     } else if (message.includes(" random" || " trivia random")) {
         answered = false;
         random();
@@ -50,10 +50,10 @@ function handleMessage (data) {
         triviaMessage(data.user, "math");
     } else if (message.includes(" trivia geography")) {
         answered = false;
-        triviaMessage(data.user, "computers");
+        triviaMessage(data.user, "geography");
     } else if (message.includes(" trivia sports")) {
         answered = false;
-        triviaMessage(data.user, "computers");
+        triviaMessage(data.user, "sports");
     } else if (message.includes(" chucknorris")) {
         answered = false;
         chuckJoke();
@@ -73,8 +73,25 @@ function random () {
     }
 }  
 
-function triviaMessage (user) {
-    axios.get("https://opentdb.com/api.php?amount=1").
+function triviaMessage (user, category) {
+    var url = function url () {
+        switch (category) {
+        case "film":
+            return "https://opentdb.com/api.php?amount=1&category=11"
+        case "computers":
+            return "https://opentdb.com/api.php?amount=1&category=18"
+        case "math":
+            return "https://opentdb.com/api.php?amount=1&category=19"
+        case "geography":
+            return "https://opentdb.com/api.php?amount=1&category=22"
+        case "sports":
+            return "https://opentdb.com/api.php?amount=1&category=21"
+        default:
+            return "https://opentdb.com/api.php?amount=1"
+        }
+    }
+
+    axios.get(url(category)).
         then(res => {
             const question = res.data.results[0]["question"];
             bot.postMessageToChannel("bots-only", `Question: ${question}`, null);
